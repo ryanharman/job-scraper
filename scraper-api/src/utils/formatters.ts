@@ -14,3 +14,8 @@ export const formatJobTitle = (jobTitle: string) => {
   if (jobTitle.includes("new")) return jobTitle.split("new")[1];
   return jobTitle;
 };
+
+export const formatSalary = (salary: string) => {
+  if (salary === "0" || salary === "") return "No salary listed";
+  return salary;
+};

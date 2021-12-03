@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { formatJobTitle, formatLocation } from "./formatters";
+import { formatJobTitle, formatLocation, formatSalary } from "./formatters";
 
 export interface IndeedConfig {
   url: (index: number) => string;
@@ -28,7 +28,7 @@ export const config: Array<IndeedConfig> = [
     incrementBy: 10,
     responseObject: (jobResult) => ({
       jobTitle: formatJobTitle(jobResult(".jobTitle").text()),
-      salary: jobResult(".salary-snippet").text(),
+      salary: formatSalary(jobResult(".salary-snippet").text()),
       company: jobResult(".companyName").text(),
       location: formatLocation(jobResult(".companyLocation").text()),
       listedDate: jobResult(".date").text(),
