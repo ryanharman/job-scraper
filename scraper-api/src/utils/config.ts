@@ -2,7 +2,7 @@ import * as cheerio from "cheerio";
 import { formatJobTitle, formatLocation, formatSalary } from "./formatters";
 
 export interface IndeedConfig {
-  url: (index: number) => string;
+  url: (index: number, role: string, location: string) => string;
   maxPages: number;
   incrementBy: number;
   responseObject: (jobResult: cheerio.CheerioAPI) => IndeedResponseObject;
@@ -22,8 +22,8 @@ export type IndeedResponseObject = {
 
 export const config: Array<IndeedConfig> = [
   {
-    url: (index) =>
-      `https://uk.indeed.com/jobs?q=software+engineer&l=Manchester&start=${10 * index}`,
+    url: (index, role, location) =>
+      `https://uk.indeed.com/jobs?q=${role}&l=${location}&start=${10 * index}`,
     maxPages: 3,
     incrementBy: 10,
     responseObject: (jobResult) => ({

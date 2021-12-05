@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { scraper } from "./utils/scraper";
+import { scraper, searchParams, SearchRequest } from "./utils/scraper";
 import cors from "cors";
 
 const app = express();
@@ -8,8 +8,8 @@ const port = 3001;
 const main = async () => {
   app.use(cors());
 
-  app.get("/", async (req: Request, res: Response) => {
-    const response = await Promise.all(await scraper());
+  app.get("/", async (req: SearchRequest, res: Response) => {
+    const response = await Promise.all(await scraper(req));
     res.send(response);
   });
 
