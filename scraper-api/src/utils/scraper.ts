@@ -1,17 +1,9 @@
 import axios from "axios";
-import { config, IndeedResponseObject } from "./config";
+import { Config, config, GenericConfig, IndeedResponseObject } from "./config";
+import { SearchRequest } from "types/SearchRequest";
 import * as cheerio from "cheerio";
-import { Request } from "express";
 
 const Cheerio = cheerio.default;
-
-// TODO: Refine this and export from somewhere else possibly
-export interface searchParams {
-  role: string;
-  location: string;
-}
-
-export type SearchRequest = Request<{}, {}, {}, searchParams>;
 
 export const scraper = async (request: SearchRequest) => {
   const { query } = request;
@@ -19,7 +11,7 @@ export const scraper = async (request: SearchRequest) => {
   const location = query.location.split(" ").join("+");
 
   const jobsArray = await config.reduce(async (acc, curr) => {
-    let jobResults: Array<IndeedResponseObject> = [];
+    let jobResults: Config = [];
 
     for (let i = 0; i < curr.maxPages; i++) {
       const url = curr.url(i, role, location);
@@ -35,7 +27,7 @@ export const scraper = async (request: SearchRequest) => {
   return jobsArray;
 };
 
-const parseHtml = (html: cheerio.CheerioAPI, cfg: any) =>
+const parseHtml = (html: cheerio.CheerioAPI, cfg: GenericConfig) =>
   html(cfg.mainContainer)
     .map((_, item) => {
       const jobResult = Cheerio.load(item);

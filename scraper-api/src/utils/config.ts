@@ -1,13 +1,15 @@
 import * as cheerio from "cheerio";
 import { formatJobTitle, formatLocation, formatSalary } from "./formatters";
 
-export interface IndeedConfig {
+export type GenericConfig<ResObject = any> = {
   url: (index: number, role: string, location: string) => string;
   maxPages: number;
   incrementBy: number;
-  responseObject: (jobResult: cheerio.CheerioAPI) => IndeedResponseObject;
   mainContainer: string;
-}
+  responseObject: (jobResult: cheerio.CheerioAPI) => ResObject;
+};
+
+export type Config = GenericConfig<IndeedResponseObject>[];
 
 export type IndeedResponseObject = {
   jobTitle: string;
@@ -20,12 +22,13 @@ export type IndeedResponseObject = {
   jobSiteLink: string;
 };
 
-export const config: Array<IndeedConfig> = [
+export const config: Config = [
   {
     url: (index, role, location) =>
       `https://uk.indeed.com/jobs?q=${role}&l=${location}&start=${10 * index}`,
     maxPages: 3,
     incrementBy: 10,
+    mainContainer: ".result", // Container for the list of job results
     responseObject: (jobResult) => ({
       jobTitle: formatJobTitle(jobResult(".jobTitle").text()),
       salary: formatSalary(jobResult(".salary-snippet").text()),
@@ -36,6 +39,5 @@ export const config: Array<IndeedConfig> = [
       otherLocationsLink: `https://uk.indeed.com${jobResult(".companyLocation a").attr("href")}`,
       jobSiteLink: `https://uk.indeed.com${jobResult("a").attr("href")}`,
     }),
-    mainContainer: ".result", // Container for the list of job results
   },
 ];

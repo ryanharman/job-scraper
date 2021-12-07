@@ -1,5 +1,6 @@
-import express, { Request, Response } from "express";
-import { scraper, searchParams, SearchRequest } from "./utils/scraper";
+import express, { Response } from "express";
+import { scraper } from "./utils/scraper";
+import { SearchRequest } from "types/SearchRequest";
 import cors from "cors";
 
 const app = express();
